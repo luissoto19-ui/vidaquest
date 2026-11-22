@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "VidaQuest",
+    "slug": "vidaquest",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "plugins": [
+      "expo-notifications",
+      "expo-status-bar"
+    ],
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}

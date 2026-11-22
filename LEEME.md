@@ -1,0 +1,42 @@
+# VidaQuest 🎮
+
+Tu vida es el juego: cumple misiones reales y sube tus barras de Salud, Amor, Dinero e Inteligencia.
+
+## Cómo abrir la app en tu celular
+
+1. Instala **Expo Go** en tu celular (Play Store o App Store).
+2. Conecta tu celular y tu computadora **a la misma red Wi-Fi**.
+3. En la computadora, abre PowerShell en esta carpeta y escribe:
+
+   ```powershell
+   npx expo start
+   ```
+
+4. Aparecerá un **código QR**:
+   - **Android:** abre Expo Go y toca "Scan QR code".
+   - **iPhone:** abre la cámara y apunta al código.
+5. ¡Listo! Cada vez que guardes un cambio en el código, la app se actualiza sola en tu celular.
+
+Para detener el servidor presiona `Ctrl + C` en PowerShell.
+
+## Para verla en el navegador de la computadora
+
+```powershell
+npx expo start --web
+```
+
+(En el navegador no hay notificaciones; esas solo funcionan en el celular.)
+
+## Dónde cambiar cada cosa
+
+| Quiero cambiar…                     | Archivo                          |
+|-------------------------------------|----------------------------------|
+| Misiones                            | `src/data/misiones.js`           |
+| Frases motivacionales               | `src/data/frases.js`             |
+| Ropa, peinados y precios            | `src/data/tienda.js`             |
+| Logros                              | `src/data/logros.js`             |
+| Opciones del FODA y el cuestionario | `src/data/foda.js`               |
+| Colores de la app                   | `src/tema.js`                    |
+| Dibujo del personaje                | `src/components/Personaje.js`    |
+| Pantallas                           | `src/screens/`                   |
+| Lógica del juego (guardar, premios) | `src/estado/JuegoContext.js`     |
