@@ -19,7 +19,10 @@ export default function Inicio({ irA }) {
   const { nombre, barras, monedas, xp, racha, apariencia, diarias } = estado;
   const animo = calcularAnimo(barras);
   const baja = AREAS[areaMasBaja(barras)];
-  const pendientes = diarias.ids.length - diarias.hechas.length;
+  // misiones de hoy (las del juego + las propias) que todavía no están hechas
+  const pendientes = [...diarias.ids, ...estado.propias.map((m) => m.id)].filter(
+    (id) => !diarias.hechas.includes(id)
+  ).length;
 
   return (
     <ScrollView contentContainerStyle={estilos.contenedor}>

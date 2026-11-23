@@ -12,6 +12,7 @@ import { cancelarFrases, programarFrases } from '../notificaciones';
 
 const CLAVE_GUARDADO = 'vidaquest_estado_v1';
 const PERDIDA_POR_DIA = 3; // puntos que baja cada barra por cada día sin entrar
+export const MAX_PROPIAS = 5; // cuántas misiones propias puede tener el jugador
 
 export const ESTADO_INICIAL = {
   creado: false,
@@ -32,6 +33,7 @@ export const ESTADO_INICIAL = {
   inventario: ITEMS_GRATIS,
   diarias: { fecha: null, ids: [], hechas: [] },
   semanales: { semana: null, ids: [], hechas: [] },
+  propias: [], // misiones que escribe el propio jugador: { id, titulo, area }
   stats: { total: 0, salud: 0, amor: 0, dinero: 0, inteligencia: 0, compras: 0 },
   racha: { dias: 0, mejor: 0, ultimoDia: null },
   logros: [],
@@ -50,6 +52,7 @@ function fusionar(g) {
     foda: { ...I.foda, ...g.foda },
     apariencia: { ...I.apariencia, ...g.apariencia },
     inventario: Array.from(new Set([...I.inventario, ...(g.inventario || [])])),
+    propias: g.propias || [],
     stats: { ...I.stats, ...g.stats },
     racha: { ...I.racha, ...g.racha },
     notificacion: { ...I.notificacion, ...g.notificacion },
@@ -140,14 +143,17 @@ export function ProveedorJuego({ children }) {
     );
   }, []);
 
+  // tipo: 'diaria', 'semanal' o 'propia'. Las propias se marcan junto con las diarias
+  // (así se reinician solas cada día) y dan el mismo premio que una diaria.
   const completarMision = useCallback((id, tipo) => {
     setEstado((prev) => {
-      const clave = tipo === 'diaria' ? 'diarias' : 'semanales';
+      const clave = tipo === 'semanal' ? 'semanales' : 'diarias';
       const lista = prev[clave];
-      if (!lista.ids.includes(id) || lista.hechas.includes(id)) return prev;
+      const mision = tipo === 'propia' ? prev.propias.find((m) => m.id === id) : MISIONES_POR_ID[id];
+      if (!mision || lista.hechas.includes(id)) return prev;
+      if (tipo !== 'propia' && !lista.ids.includes(id)) return prev;
 
-      const mision = MISIONES_POR_ID[id];
-      const premio = RECOMPENSAS[tipo];
+      const premio = RECOMPENSAS[tipo === 'semanal' ? 'semanal' : 'diaria'];
       const fecha = hoy();
 
       let dias = prev.racha.dias;
@@ -194,6 +200,23 @@ export function ProveedorJuego({ children }) {
     });
   }, []);
 
+  const agregarPropia = useCallback((titulo, area) => {
+    setEstado((prev) => {
+      const limpio = titulo.trim();
+      if (!limpio || prev.propias.length >= MAX_PROPIAS) return prev;
+      const nueva = { id: `p_${Date.now()}`, titulo: limpio, area };
+      return aplicarLogros({
+        ...prev,
+        propias: [...prev.propias, nueva],
+        avisos: [...prev.avisos, `✍️ Nueva misión: ${limpio}`],
+      });
+    });
+  }, []);
+
+  const borrarPropia = useCallback((id) => {
+    setEstado((prev) => ({ ...prev, propias: prev.propias.filter((m) => m.id !== id) }));
+  }, []);
+
   const actualizarFoda = useCallback((cuadrante, lista) => {
     setEstado((prev) => aplicarLogros({ ...prev, foda: { ...prev.foda, [cuadrante]: lista } }));
   }, []);
@@ -217,6 +240,8 @@ export function ProveedorJuego({ children }) {
     crearPersonaje,
     completarMision,
     comprar,
+    agregarPropia,
+    borrarPropia,
     cambiarApariencia,
     actualizarFoda,
     cambiarNotificacion,

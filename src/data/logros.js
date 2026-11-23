@@ -14,6 +14,8 @@ export const LOGROS = [
     progreso: (e) => [min(e.stats.total, 1), 1] },
   { id: 'conocete', emoji: '🪞', nombre: 'Conócete a ti mismo', descripcion: 'Llena los 4 cuadros de tu FODA', monedas: 40,
     progreso: (e) => [LISTA_CUADRANTES.filter((c) => e.foda[c].length > 0).length, 4] },
+  { id: 'mi_camino', emoji: '✍️', nombre: 'Mi propio camino', descripcion: 'Crea tu primera misión propia', monedas: 20,
+    progreso: (e) => [min((e.propias || []).length, 1), 1] },
   { id: 'constante', emoji: '📅', nombre: 'Constante', descripcion: 'Completa 10 misiones', monedas: 50,
     progreso: (e) => [min(e.stats.total, 10), 10] },
   { id: 'racha_3', emoji: '🔥', nombre: 'En llamas', descripcion: 'Cumple misiones 3 días seguidos', monedas: 30,

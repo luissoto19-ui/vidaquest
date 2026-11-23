@@ -188,6 +188,34 @@ function Accesorio({ estilo, color }) {
           <Line x1="125" y1="68" x2="137" y2="66" stroke={color} strokeWidth="3" />
         </G>
       );
+    case 'lentesSol':
+      return (
+        <G>
+          <Path d="M74 62 L98 62 Q98 80 86 80 Q74 80 74 62 Z" fill={color} />
+          <Path d="M102 62 L126 62 Q126 80 114 80 Q102 80 102 62 Z" fill={color} />
+          <Line x1="98" y1="64" x2="102" y2="64" stroke={color} strokeWidth="3" />
+          <Line x1="74" y1="63" x2="63" y2="66" stroke={color} strokeWidth="3" />
+          <Line x1="126" y1="63" x2="137" y2="66" stroke={color} strokeWidth="3" />
+          <Path d="M79 66 L86 66" stroke="#fff" strokeWidth="2" opacity="0.5" strokeLinecap="round" />
+          <Path d="M107 66 L114 66" stroke="#fff" strokeWidth="2" opacity="0.5" strokeLinecap="round" />
+        </G>
+      );
+    case 'mono':
+      return (
+        <G>
+          <Path d="M118 30 L104 20 L104 40 Z" fill={color} />
+          <Path d="M118 30 L132 20 L132 40 Z" fill={color} />
+          <Circle cx="118" cy="30" r="5" fill={oscurecer(color)} />
+        </G>
+      );
+    case 'bufanda':
+      return (
+        <G>
+          <Path d="M78 108 Q100 122 122 108 L124 120 Q100 134 76 120 Z" fill={color} />
+          <Rect x="106" y="118" width="13" height="40" rx="4" fill={color} />
+          <Line x1="108" y1="152" x2="117" y2="152" stroke={oscurecer(color)} strokeWidth="2" />
+        </G>
+      );
     case 'gorra':
       return (
         <G>

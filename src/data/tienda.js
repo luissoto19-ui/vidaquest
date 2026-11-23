@@ -30,6 +30,12 @@ export const ITEMS = [
   { id: 'camisa_celeste', categoria: 'camisa', nombre: 'Camisa celeste', estilo: 'camisa', color: '#9BD3F5', precio: 60 },
   { id: 'camisa_blanca', categoria: 'camisa', nombre: 'Camisa blanca', estilo: 'camisa', color: '#FFFFFF', precio: 60 },
   { id: 'camisa_sudadera_gris', categoria: 'camisa', nombre: 'Sudadera gris', estilo: 'sudadera', color: '#8E8E9A', precio: 80 },
+  { id: 'camisa_playera_rosa', categoria: 'camisa', nombre: 'Playera rosa', estilo: 'playera', color: '#F48FB1', precio: 40 },
+  { id: 'camisa_playera_negra', categoria: 'camisa', nombre: 'Playera negra', estilo: 'playera', color: '#2B2B33', precio: 40 },
+  { id: 'camisa_cuadros', categoria: 'camisa', nombre: 'Camisa verde', estilo: 'camisa', color: '#5FAE7B', precio: 70 },
+  { id: 'camisa_sudadera_azul', categoria: 'camisa', nombre: 'Sudadera azul', estilo: 'sudadera', color: '#2F6FD6', precio: 90 },
+  { id: 'camisa_sudadera_roja', categoria: 'camisa', nombre: 'Sudadera roja', estilo: 'sudadera', color: '#D64545', precio: 90 },
+  { id: 'camisa_traje_azul', categoria: 'camisa', nombre: 'Traje azul marino', estilo: 'traje', color: '#24375E', precio: 250 },
   { id: 'camisa_sudadera_morada', categoria: 'camisa', nombre: 'Sudadera del sabio', estilo: 'sudadera', color: '#7B4FE0', precio: 0, logro: 'sabio' },
   { id: 'camisa_traje', categoria: 'camisa', nombre: 'Traje elegante', estilo: 'traje', color: '#2C2C3A', precio: 0, logro: 'ahorrador' },
 
@@ -40,6 +46,10 @@ export const ITEMS = [
   { id: 'pant_falda_roja', categoria: 'pantalon', nombre: 'Falda roja', estilo: 'falda', color: '#D64555', precio: 50 },
   { id: 'pant_falda_negra', categoria: 'pantalon', nombre: 'Falda negra', estilo: 'falda', color: '#2E2E38', precio: 50 },
   { id: 'pant_jeans_negro', categoria: 'pantalon', nombre: 'Jeans negros', estilo: 'jeans', color: '#2A2A33', precio: 60 },
+  { id: 'pant_short_azul', categoria: 'pantalon', nombre: 'Short azul', estilo: 'short', color: '#4A7BD0', precio: 30 },
+  { id: 'pant_falda_mezclilla', categoria: 'pantalon', nombre: 'Falda de mezclilla', estilo: 'falda', color: '#4C6FA8', precio: 50 },
+  { id: 'pant_cafe', categoria: 'pantalon', nombre: 'Pantalón café', estilo: 'jeans', color: '#7A5A3C', precio: 60 },
+  { id: 'pant_deportivo_azul', categoria: 'pantalon', nombre: 'Pants azul', estilo: 'deportivo', color: '#2F4E8C', precio: 40 },
   { id: 'pant_deportivo_rojo', categoria: 'pantalon', nombre: 'Pants de atleta', estilo: 'deportivo', color: '#C0392B', precio: 0, logro: 'atleta' },
 
   // Zapatos
@@ -47,6 +57,9 @@ export const ITEMS = [
   { id: 'zap_tenis_negros', categoria: 'zapatos', nombre: 'Tenis negros', estilo: 'tenis', color: '#2B2B2B', precio: 30 },
   { id: 'zap_tenis_rojos', categoria: 'zapatos', nombre: 'Tenis rojos', estilo: 'tenis', color: '#E74C3C', precio: 50 },
   { id: 'zap_botas', categoria: 'zapatos', nombre: 'Botas cafés', estilo: 'botas', color: '#7A4B2A', precio: 70 },
+  { id: 'zap_tenis_azules', categoria: 'zapatos', nombre: 'Tenis azules', estilo: 'tenis', color: '#3D7BE0', precio: 40 },
+  { id: 'zap_tenis_morados', categoria: 'zapatos', nombre: 'Tenis morados', estilo: 'tenis', color: '#7B4FE0', precio: 50 },
+  { id: 'zap_botas_negras', categoria: 'zapatos', nombre: 'Botas negras', estilo: 'botas', color: '#2B2B2B', precio: 80 },
   { id: 'zap_tenis_dorados', categoria: 'zapatos', nombre: 'Tenis dorados', estilo: 'tenis', color: '#E8B923', precio: 200 },
 
   // Accesorios
@@ -55,6 +68,11 @@ export const ITEMS = [
   { id: 'acc_gorra_azul', categoria: 'accesorio', nombre: 'Gorra azul', estilo: 'gorra', color: '#3D6FD9', precio: 60 },
   { id: 'acc_audifonos', categoria: 'accesorio', nombre: 'Audífonos', estilo: 'audifonos', color: '#6C4CF1', precio: 90 },
   { id: 'acc_reloj', categoria: 'accesorio', nombre: 'Reloj', estilo: 'reloj', color: '#34495E', precio: 80 },
+  { id: 'acc_lentes_sol', categoria: 'accesorio', nombre: 'Lentes de sol', estilo: 'lentesSol', color: '#1E1E24', precio: 70 },
+  { id: 'acc_gorra_negra', categoria: 'accesorio', nombre: 'Gorra negra', estilo: 'gorra', color: '#2B2B33', precio: 60 },
+  { id: 'acc_mono', categoria: 'accesorio', nombre: 'Moño', estilo: 'mono', color: '#FF5C8A', precio: 40 },
+  { id: 'acc_bufanda', categoria: 'accesorio', nombre: 'Bufanda', estilo: 'bufanda', color: '#E0533D', precio: 70 },
+  { id: 'acc_audifonos_rosas', categoria: 'accesorio', nombre: 'Audífonos rosas', estilo: 'audifonos', color: '#F06292', precio: 90 },
   { id: 'acc_collar', categoria: 'accesorio', nombre: 'Collar de corazón', estilo: 'collar', color: '#F5B700', precio: 0, logro: 'corazon' },
   { id: 'acc_corona', categoria: 'accesorio', nombre: 'Corona', estilo: 'corona', color: '#F5B700', precio: 0, logro: 'racha_7' },
   { id: 'acc_capa', categoria: 'accesorio', nombre: 'Capa de héroe', estilo: 'capa', color: '#C0392B', precio: 0, logro: 'imparable' },
