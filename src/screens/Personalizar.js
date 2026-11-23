@@ -9,8 +9,11 @@ import { useJuego } from '../estado/JuegoContext';
 import { COLORES } from '../tema';
 import { calcularAnimo } from '../utils/juego';
 import { Muestras } from './Bienvenida';
+import Mascota from '../components/Mascota';
+import PanelMascotas from '../components/PanelMascotas';
+import { calcularAnimoMascota } from '../utils/juego';
 
-const PESTANAS = ['peinado', 'camisa', 'pantalon', 'zapatos', 'accesorio', 'colores'];
+const PESTANAS = ['mascotas', 'peinado', 'camisa', 'pantalon', 'zapatos', 'accesorio', 'colores'];
 const nombreLogro = (id) => LOGROS.find((l) => l.id === id)?.nombre;
 
 export default function Personalizar() {
@@ -18,6 +21,7 @@ export default function Personalizar() {
   const [pestana, setPestana] = useState('camisa');
   const [seleccion, setSeleccion] = useState(null); // prenda que estás "probándote" sin tenerla
   const { apariencia, inventario, monedas } = estado;
+  const mascota = estado.mascotaActiva ? estado.mascotas[estado.mascotaActiva] : null;
 
   // Si estás viendo una prenda que no tienes, el personaje te la muestra puesta.
   const itemVista = seleccion ? ITEMS_POR_ID[seleccion] : null;
@@ -51,6 +55,11 @@ export default function Personalizar() {
 
       <View style={estilos.escenario}>
         <Personaje apariencia={vista} animo={calcularAnimo(estado.barras)} alto={220} />
+        {mascota && (
+          <View style={estilos.mascota}>
+            <Mascota especie={estado.mascotaActiva} animo={calcularAnimoMascota(estado)} accesorio={mascota.accesorio} alto={80} />
+          </View>
+        )}
       </View>
 
       {itemVista && (
@@ -86,7 +95,9 @@ export default function Personalizar() {
         {PESTANAS.map((p) => (
           <Chip
             key={p}
-            texto={p === 'colores' ? '🎨 Piel y pelo' : `${CATEGORIAS[p].emoji} ${CATEGORIAS[p].nombre}`}
+            texto={
+              p === 'colores' ? '🎨 Piel y pelo' : p === 'mascotas' ? '🐾 Mascotas' : `${CATEGORIAS[p].emoji} ${CATEGORIAS[p].nombre}`
+            }
             activo={pestana === p}
             onPress={() => {
               setPestana(p);
@@ -97,7 +108,9 @@ export default function Personalizar() {
       </ScrollView>
 
       <ScrollView contentContainerStyle={estilos.rejilla}>
-        {pestana === 'colores' ? (
+        {pestana === 'mascotas' ? (
+          <PanelMascotas />
+        ) : pestana === 'colores' ? (
           <Tarjeta style={{ width: '100%' }}>
             <Text style={estilos.etiqueta}>Tono de piel</Text>
             <Muestras colores={PIELES} actual={apariencia.piel} onElegir={(c) => cambiarApariencia('piel', c)} />
@@ -158,10 +171,12 @@ const estilos = StyleSheet.create({
     marginTop: 10,
     paddingVertical: 8,
   },
+  mascota: { position: 'absolute', right: 30, bottom: 10 },
   compra: { flexDirection: 'row', alignItems: 'center', marginHorizontal: 18, marginTop: 10, marginBottom: 0, padding: 12 },
   compraNombre: { fontWeight: '800', fontSize: 16, color: COLORES.texto },
   compraInfo: { color: COLORES.textoSuave, fontSize: 13, marginTop: 2 },
-  pestanas: { flexGrow: 0, marginTop: 12, marginBottom: 4 },
+  // flexShrink 0: que la fila de pestañas no se aplaste cuando la pantalla es chica
+  pestanas: { flexGrow: 0, flexShrink: 0, marginTop: 12, marginBottom: 4 },
   rejilla: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 12, paddingBottom: 30 },
   item: {
     width: '30%',

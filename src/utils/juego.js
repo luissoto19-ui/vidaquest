@@ -53,6 +53,18 @@ export function calcularAnimo(barras) {
   return 'triste';
 }
 
+// ----- Ánimo de la mascota según tu constancia -----
+// feliz: hoy ya cumpliste algo o llevas 3+ días seguidos
+// normal: llevas racha pero hoy aún no cumples nada
+// dormido: perdiste la racha hace poco
+// triste: llevas 3 días o más sin cumplir misiones
+export function calcularAnimoMascota({ racha, diarias }) {
+  if (diarias.hechas.length > 0 || racha.dias >= 3) return 'feliz';
+  if (racha.dias >= 1) return 'normal';
+  if (racha.ultimoDia && diasEntre(racha.ultimoDia, hoy()) >= 3) return 'triste';
+  return 'dormido';
+}
+
 export function areaMasBaja(barras) {
   return [...LISTA_AREAS].sort((a, b) => barras[a] - barras[b])[0];
 }

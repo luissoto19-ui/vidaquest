@@ -5,6 +5,10 @@ import { LISTA_AREAS } from '../tema';
 import { calcularNivel } from '../utils/juego';
 import { LISTA_CUADRANTES } from './foda';
 import { ITEMS_POR_ID } from './tienda';
+import { MASCOTAS_POR_ID, nivelMascota, nuevaMascota } from './mascotas';
+
+const nivelMascotaMasAlto = (e) =>
+  Math.max(0, ...Object.values(e.mascotas || {}).map((m) => nivelMascota(m.xp)));
 
 const min = (a, b) => Math.min(a, b);
 const barraMinima = (e) => Math.min(...LISTA_AREAS.map((a) => e.barras[a]));
@@ -28,10 +32,14 @@ export const LOGROS = [
     progreso: (e) => [min(e.stats.amor, 15), 15] },
   { id: 'ahorrador', emoji: '🏦', nombre: 'Ahorrador', descripcion: 'Completa 15 misiones de Dinero', monedas: 60, item: 'camisa_traje',
     progreso: (e) => [min(e.stats.dinero, 15), 15] },
-  { id: 'sabio', emoji: '📚', nombre: 'Sabio', descripcion: 'Completa 15 misiones de Inteligencia', monedas: 60, item: 'camisa_sudadera_morada',
+  { id: 'sabio', emoji: '📚', nombre: 'Sabio', descripcion: 'Completa 15 misiones de Inteligencia', monedas: 60, item: 'camisa_sudadera_morada', mascota: 'buho',
     progreso: (e) => [min(e.stats.inteligencia, 15), 15] },
   { id: 'fashion', emoji: '🛍️', nombre: 'A la moda', descripcion: 'Compra tu primera prenda', monedas: 20,
     progreso: (e) => [min(e.stats.compras, 1), 1] },
+  { id: 'mejor_amigo', emoji: '🐾', nombre: 'Mejor amigo', descripcion: 'Consigue tu primera mascota', monedas: 30,
+    progreso: (e) => [min(Object.keys(e.mascotas || {}).length, 1), 1] },
+  { id: 'cuidador', emoji: '🦴', nombre: 'Gran cuidador', descripcion: 'Sube una mascota al nivel 5', monedas: 100,
+    progreso: (e) => [min(nivelMascotaMasAlto(e), 5), 5] },
   { id: 'nivel_5', emoji: '⭐', nombre: 'Nivel 5', descripcion: 'Llega al nivel 5', monedas: 100,
     progreso: (e) => [min(calcularNivel(e.xp), 5), 5] },
   { id: 'imparable', emoji: '🦸', nombre: 'Imparable', descripcion: 'Completa 50 misiones', monedas: 150, item: 'acc_capa',
@@ -40,7 +48,7 @@ export const LOGROS = [
     progreso: (e) => [min(barraMinima(e), 70), 70] },
   { id: 'coleccionista', emoji: '🧥', nombre: 'Coleccionista', descripcion: 'Compra 8 prendas', monedas: 100,
     progreso: (e) => [min(e.stats.compras, 8), 8] },
-  { id: 'racha_30', emoji: '🌋', nombre: 'Hábito de acero', descripcion: 'Cumple misiones 30 días seguidos', monedas: 300,
+  { id: 'racha_30', emoji: '🌋', nombre: 'Hábito de acero', descripcion: 'Cumple misiones 30 días seguidos', monedas: 300, mascota: 'dragon',
     progreso: (e) => [min(e.racha.mejor || 0, 30), 30] },
   { id: 'nivel_10', emoji: '🌟', nombre: 'Nivel 10', descripcion: 'Llega al nivel 10', monedas: 200,
     progreso: (e) => [min(calcularNivel(e.xp), 10), 10] },
@@ -60,7 +68,8 @@ export function aplicarLogros(estado) {
   const nuevos = LOGROS.filter((l) => !estado.logros.includes(l.id) && cumple(l, estado));
   if (nuevos.length === 0) return estado;
 
-  let { monedas, inventario, logros, avisos } = estado;
+  let { monedas, inventario, logros, avisos, mascotas, mascotaActiva } = estado;
+  mascotas = { ...(mascotas || {}) };
   inventario = [...inventario];
   avisos = [...avisos];
   logros = [...logros];
@@ -72,7 +81,13 @@ export function aplicarLogros(estado) {
       inventario.push(l.item);
       texto += ` y ganaste: ${ITEMS_POR_ID[l.item].nombre}`;
     }
+    if (l.mascota && !mascotas[l.mascota]) {
+      mascotas[l.mascota] = nuevaMascota(l.mascota);
+      if (!mascotaActiva) mascotaActiva = l.mascota;
+      texto += ` ${MASCOTAS_POR_ID[l.mascota].emoji} ¡y una mascota: ${MASCOTAS_POR_ID[l.mascota].especie}!`;
+    }
     avisos.push(texto);
   }
-  return { ...estado, monedas, inventario, logros, avisos };
+  // Volvemos a revisar por si el premio desbloqueó otro logro (ej. tu primera mascota).
+  return aplicarLogros({ ...estado, monedas, inventario, logros, avisos, mascotas, mascotaActiva });
 }

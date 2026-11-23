@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { BarraProgreso, Tarjeta, Titulo, Subtitulo } from '../components/UI';
 import { LOGROS } from '../data/logros';
 import { ITEMS_POR_ID } from '../data/tienda';
+import { MASCOTAS_POR_ID } from '../data/mascotas';
 import { useJuego } from '../estado/JuegoContext';
 import { COLORES } from '../tema';
 
@@ -32,6 +33,7 @@ export default function Logros() {
               <Text style={estilos.desc}>{l.descripcion}</Text>
               <Text style={estilos.premio}>
                 +{l.monedas} 🪙{l.item ? ` · 🎁 ${ITEMS_POR_ID[l.item].nombre}` : ''}
+                {l.mascota ? ` · ${MASCOTAS_POR_ID[l.mascota].emoji} ${MASCOTAS_POR_ID[l.mascota].especie}` : ''}
               </Text>
               {!tiene && (
                 <View style={{ marginTop: 6 }}>

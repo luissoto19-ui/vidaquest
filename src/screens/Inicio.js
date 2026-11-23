@@ -6,7 +6,9 @@ import { BarraProgreso, BarraVida, Boton, Tarjeta } from '../components/UI';
 import { useJuego } from '../estado/JuegoContext';
 import { fraseDelDia } from '../notificaciones';
 import { AREAS, COLORES, LISTA_AREAS } from '../tema';
-import { areaMasBaja, calcularAnimo, calcularNivel, XP_POR_NIVEL, xpEnNivel } from '../utils/juego';
+import { areaMasBaja, calcularAnimo, calcularAnimoMascota, calcularNivel, XP_POR_NIVEL, xpEnNivel } from '../utils/juego';
+import Mascota from '../components/Mascota';
+import { nivelMascota } from '../data/mascotas';
 
 const TEXTO_ANIMO = {
   feliz: '¡Tu personaje está feliz! Sigue así 😄',
@@ -18,6 +20,7 @@ export default function Inicio({ irA }) {
   const { estado } = useJuego();
   const { nombre, barras, monedas, xp, racha, apariencia, diarias } = estado;
   const animo = calcularAnimo(barras);
+  const mascota = estado.mascotaActiva ? estado.mascotas[estado.mascotaActiva] : null;
   const baja = AREAS[areaMasBaja(barras)];
   // misiones de hoy (las del juego + las propias) que todavía no están hechas
   const pendientes = [...diarias.ids, ...estado.propias.map((m) => m.id)].filter(
@@ -46,6 +49,19 @@ export default function Inicio({ irA }) {
       {/* Personaje + botón de personalizar */}
       <View style={estilos.escenario}>
         <Personaje apariencia={apariencia} animo={animo} alto={300} />
+        {mascota && (
+          <Pressable style={estilos.mascota} onPress={() => irA('estilo')}>
+            <Mascota
+              especie={estado.mascotaActiva}
+              animo={calcularAnimoMascota(estado)}
+              accesorio={mascota.accesorio}
+              alto={100}
+            />
+            <Text style={estilos.mascotaNombre} numberOfLines={1}>
+              {mascota.nombre} · Nv {nivelMascota(mascota.xp)}
+            </Text>
+          </Pressable>
+        )}
         <Pressable style={estilos.botonEstilo} onPress={() => irA('estilo')}>
           <Text style={{ fontSize: 22 }}>👕</Text>
           <Text style={estilos.botonEstiloTexto}>Personalizar</Text>
@@ -95,6 +111,17 @@ const estilos = StyleSheet.create({
     borderRadius: 28,
     paddingVertical: 14,
     marginVertical: 8,
+  },
+  mascota: { position: 'absolute', right: 14, bottom: 12, alignItems: 'center', maxWidth: 110 },
+  mascotaNombre: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: COLORES.primario,
+    backgroundColor: '#fff',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 999,
+    marginTop: -4,
   },
   botonEstilo: {
     position: 'absolute',

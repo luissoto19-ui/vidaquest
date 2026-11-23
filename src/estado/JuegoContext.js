@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { generarDiarias, generarSemanales, MISIONES_POR_ID, RECOMPENSAS } from '../data/misiones';
 import { aplicarLogros } from '../data/logros';
 import { ITEMS_GRATIS, ITEMS_POR_ID } from '../data/tienda';
+import { ACCESORIOS_MASCOTA_POR_ID, MASCOTAS_POR_ID, nivelMascota, nuevaMascota } from '../data/mascotas';
 import { LISTA_AREAS } from '../tema';
 import { ayer, calcularNivel, claveSemana, diasEntre, hoy } from '../utils/juego';
 import { cancelarFrases, programarFrases } from '../notificaciones';
@@ -34,6 +35,8 @@ export const ESTADO_INICIAL = {
   diarias: { fecha: null, ids: [], hechas: [] },
   semanales: { semana: null, ids: [], hechas: [] },
   propias: [], // misiones que escribe el propio jugador: { id, titulo, area }
+  mascotas: {}, // mascotas que tienes: { perro: { nombre, xp, accesorio } }
+  mascotaActiva: null, // la que te acompaña en la pantalla de inicio
   stats: { total: 0, salud: 0, amor: 0, dinero: 0, inteligencia: 0, compras: 0 },
   racha: { dias: 0, mejor: 0, ultimoDia: null },
   logros: [],
@@ -53,6 +56,8 @@ function fusionar(g) {
     apariencia: { ...I.apariencia, ...g.apariencia },
     inventario: Array.from(new Set([...I.inventario, ...(g.inventario || [])])),
     propias: g.propias || [],
+    mascotas: g.mascotas || {},
+    mascotaActiva: g.mascotaActiva || null,
     stats: { ...I.stats, ...g.stats },
     racha: { ...I.racha, ...g.racha },
     notificacion: { ...I.notificacion, ...g.notificacion },
@@ -165,6 +170,17 @@ export function ProveedorJuego({ children }) {
       const avisos = [...prev.avisos];
       if (calcularNivel(xp) > calcularNivel(prev.xp)) avisos.push(`⭐ ¡Subiste al nivel ${calcularNivel(xp)}!`);
 
+      // La mascota activa también gana experiencia y sube de nivel contigo.
+      let mascotas = prev.mascotas;
+      const activa = prev.mascotaActiva && prev.mascotas[prev.mascotaActiva];
+      if (activa) {
+        const xpMascota = activa.xp + premio.xp;
+        if (nivelMascota(xpMascota) > nivelMascota(activa.xp)) {
+          avisos.push(`🐾 ¡${activa.nombre} subió al nivel ${nivelMascota(xpMascota)}!`);
+        }
+        mascotas = { ...prev.mascotas, [prev.mascotaActiva]: { ...activa, xp: xpMascota } };
+      }
+
       return aplicarLogros({
         ...prev,
         [clave]: { ...lista, hechas: [...lista.hechas, id] },
@@ -173,6 +189,7 @@ export function ProveedorJuego({ children }) {
         xp,
         stats: { ...prev.stats, total: prev.stats.total + 1, [mision.area]: prev.stats[mision.area] + 1 },
         racha: { dias, ultimoDia: fecha, mejor: Math.max(prev.racha.mejor || 0, dias) },
+        mascotas,
         avisos,
       });
     });
@@ -215,6 +232,53 @@ export function ProveedorJuego({ children }) {
     });
   }, []);
 
+  // ---------- Mascotas ----------
+  const comprarMascota = useCallback((id) => {
+    setEstado((prev) => {
+      const info = MASCOTAS_POR_ID[id];
+      if (!info || info.logro || prev.mascotas[id] || prev.monedas < info.precio) return prev;
+      return aplicarLogros({
+        ...prev,
+        monedas: prev.monedas - info.precio,
+        mascotas: { ...prev.mascotas, [id]: nuevaMascota(id) },
+        mascotaActiva: id,
+        avisos: [...prev.avisos, `${info.emoji} ¡Adoptaste un ${info.especie.toLowerCase()}!`],
+      });
+    });
+  }, []);
+
+  // id = null para que ninguna mascota te acompañe.
+  const activarMascota = useCallback((id) => {
+    setEstado((prev) => (id && !prev.mascotas[id] ? prev : { ...prev, mascotaActiva: id }));
+  }, []);
+
+  const renombrarMascota = useCallback((id, nombre) => {
+    setEstado((prev) => {
+      if (!prev.mascotas[id]) return prev;
+      return { ...prev, mascotas: { ...prev.mascotas, [id]: { ...prev.mascotas[id], nombre: nombre.slice(0, 15) } } };
+    });
+  }, []);
+
+  // Si no tienes el accesorio y te alcanza, lo compra; luego se lo pone a la mascota activa.
+  // Tocar el que ya trae puesto se lo quita.
+  const usarAccesorioMascota = useCallback((accId) => {
+    setEstado((prev) => {
+      const id = prev.mascotaActiva;
+      const mascota = id && prev.mascotas[id];
+      const acc = ACCESORIOS_MASCOTA_POR_ID[accId];
+      if (!mascota || !acc) return prev;
+      let { monedas, inventario, avisos } = prev;
+      if (!inventario.includes(accId)) {
+        if (monedas < acc.precio) return prev;
+        monedas -= acc.precio;
+        inventario = [...inventario, accId];
+        avisos = [...avisos, `🛍️ Compraste: ${acc.nombre} para ${mascota.nombre}`];
+      }
+      const accesorio = mascota.accesorio === accId ? null : accId;
+      return { ...prev, monedas, inventario, avisos, mascotas: { ...prev.mascotas, [id]: { ...mascota, accesorio } } };
+    });
+  }, []);
+
   const borrarPropia = useCallback((id) => {
     setEstado((prev) => ({ ...prev, propias: prev.propias.filter((m) => m.id !== id) }));
   }, []);
@@ -246,6 +310,10 @@ export function ProveedorJuego({ children }) {
     comprar,
     agregarPropia,
     borrarPropia,
+    comprarMascota,
+    activarMascota,
+    renombrarMascota,
+    usarAccesorioMascota,
     cambiarApariencia,
     actualizarFoda,
     cambiarNotificacion,
