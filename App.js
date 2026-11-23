@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { ProveedorJuego, useJuego } from './src/estado/JuegoContext';
 import Aviso from './src/components/Aviso';
+import Confeti from './src/components/Confeti';
 import Bienvenida from './src/screens/Bienvenida';
 import Inicio from './src/screens/Inicio';
 import Misiones from './src/screens/Misiones';
@@ -23,7 +24,7 @@ const PESTANAS = [
 ];
 
 function Juego() {
-  const { estado, cargando } = useJuego();
+  const { estado, cargando, confeti } = useJuego();
   const [pestana, setPestana] = useState('inicio');
 
   if (cargando) {
@@ -53,6 +54,7 @@ function Juego() {
           );
         })}
       </View>
+      <Confeti disparo={confeti} />
     </View>
   );
 }

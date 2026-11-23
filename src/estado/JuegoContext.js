@@ -93,6 +93,8 @@ const JuegoContext = createContext(null);
 export function ProveedorJuego({ children }) {
   const [estado, setEstado] = useState(ESTADO_INICIAL);
   const [cargando, setCargando] = useState(true);
+  const [confeti, setConfeti] = useState(0); // sube de 1 en 1 cada vez que lanzamos confeti
+  const lanzarConfeti = useCallback(() => setConfeti((c) => c + 1), []);
 
   // 1) Cargar el progreso guardado al abrir la app.
   useEffect(() => {
@@ -237,6 +239,8 @@ export function ProveedorJuego({ children }) {
   const valor = {
     estado,
     cargando,
+    confeti,
+    lanzarConfeti,
     crearPersonaje,
     completarMision,
     comprar,

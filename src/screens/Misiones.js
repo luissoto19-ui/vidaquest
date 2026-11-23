@@ -39,7 +39,7 @@ function TarjetaMision({ mision, tipo, hecha, paraTi, onCompletar, onBorrar }) {
 }
 
 function Seccion({ titulo, lista, tipo }) {
-  const { estado, completarMision } = useJuego();
+  const { estado, completarMision, lanzarConfeti } = useJuego();
   const total = lista.ids.length;
   const hechas = lista.ids.filter((id) => lista.hechas.includes(id)).length;
   return (
@@ -63,7 +63,10 @@ function Seccion({ titulo, lista, tipo }) {
             tipo={tipo}
             hecha={lista.hechas.includes(id)}
             paraTi={esParaTi(m, estado.foda)}
-            onCompletar={() => completarMision(id, tipo)}
+            onCompletar={() => {
+              completarMision(id, tipo);
+              lanzarConfeti();
+            }}
           />
         );
       })}
@@ -73,7 +76,7 @@ function Seccion({ titulo, lista, tipo }) {
 
 // Misiones que escribe el propio jugador. Se repiten todos los días.
 function SeccionPropias() {
-  const { estado, completarMision, agregarPropia, borrarPropia } = useJuego();
+  const { estado, completarMision, lanzarConfeti, agregarPropia, borrarPropia } = useJuego();
   const [texto, setTexto] = useState('');
   const [area, setArea] = useState('salud');
   const [confirmarBorrar, setConfirmarBorrar] = useState(null);
@@ -105,7 +108,10 @@ function SeccionPropias() {
           mision={{ ...m, descripcion: confirmarBorrar === m.id ? 'Toca "Borrar" otra vez para confirmar' : '' }}
           tipo="propia"
           hecha={diarias.hechas.includes(m.id)}
-          onCompletar={() => completarMision(m.id, 'propia')}
+          onCompletar={() => {
+            completarMision(m.id, 'propia');
+            lanzarConfeti();
+          }}
           onBorrar={() => {
             if (confirmarBorrar === m.id) {
               borrarPropia(m.id);

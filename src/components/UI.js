@@ -1,6 +1,6 @@
 // Piezas pequeñas que se repiten en varias pantallas: botones, tarjetas, barras, chips.
-import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Animated, Easing, Pressable, StyleSheet, Text, View } from 'react-native';
 import { AREAS, COLORES, SOMBRA } from '../tema';
 
 export function Tarjeta({ style, children }) {
@@ -37,6 +37,24 @@ export function Chip({ texto, activo, onPress, color = COLORES.primario }) {
   );
 }
 
+// El relleno de color de una barra. Cuando cambia el valor, se desliza suavemente
+// hasta el nuevo tamaño en vez de saltar de golpe. Al aparecer, se llena desde 0.
+function RellenoAnimado({ valor, color }) {
+  const anim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(anim, {
+      toValue: Math.min(100, Math.max(0, valor)),
+      duration: 800,
+      easing: Easing.out(Easing.cubic), // rápido al inicio, suave al final
+      useNativeDriver: false, // el ancho no se puede animar con el "driver nativo"
+    }).start();
+  }, [valor]);
+
+  const width = anim.interpolate({ inputRange: [0, 100], outputRange: ['0%', '100%'] });
+  return <Animated.View style={[estilos.barraRelleno, { width, backgroundColor: color }]} />;
+}
+
 export function BarraVida({ area, valor }) {
   const info = AREAS[area];
   return (
@@ -48,7 +66,7 @@ export function BarraVida({ area, valor }) {
           <Text style={[estilos.barraValor, { color: info.color }]}>{Math.round(valor)}/100</Text>
         </View>
         <View style={estilos.barraFondo}>
-          <View style={[estilos.barraRelleno, { width: `${valor}%`, backgroundColor: info.color }]} />
+          <RellenoAnimado valor={valor} color={info.color} />
         </View>
       </View>
     </View>
@@ -58,7 +76,7 @@ export function BarraVida({ area, valor }) {
 export function BarraProgreso({ valor, color = COLORES.primario, alto = 8 }) {
   return (
     <View style={[estilos.barraFondo, { height: alto }]}>
-      <View style={[estilos.barraRelleno, { width: `${Math.min(100, valor)}%`, backgroundColor: color }]} />
+      <RellenoAnimado valor={valor} color={color} />
     </View>
   );
 }
