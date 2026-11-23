@@ -38,6 +38,24 @@ Cada vez que termines un cambio que te guste, en PowerShell dentro de esta carpe
 Por ejemplo: `.\guardar "agregué 5 frases nuevas"`. Eso guarda la copia en tu computadora y la sube a
 https://github.com/luissoto19-ui/vidaquest (privado). Si algo se rompe, siempre podemos regresar a una copia anterior.
 
+## Publicar en Play Store
+
+Archivos listos:
+- `assets/`: ícono, ícono de notificación, pantalla de carga e imagen destacada (se regeneran con `node scripts/generar-imagenes.js`).
+- `tienda/ficha-play-store.md`: todos los textos y respuestas para Google Play Console.
+- `tienda/privacidad.md`: aviso de privacidad (necesita estar publicado en una URL pública).
+- `eas.json`: configuración para compilar con EAS (el servicio de Expo).
+
+Compilar:
+
+```powershell
+npx eas-cli build -p android --profile preview      # APK para instalar en tu celular y probar
+npx eas-cli build -p android --profile production   # AAB para subir a Google Play
+```
+
+Al publicar una versión nueva, la versión interna (`versionCode`) sube sola. Si cambias algo grande,
+también sube `version` en `app.json` (por ejemplo de 1.0.0 a 1.1.0).
+
 ## Dónde cambiar cada cosa
 
 | Quiero cambiar…                     | Archivo                          |
