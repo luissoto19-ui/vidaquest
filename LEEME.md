@@ -27,6 +27,17 @@ npx expo start --web
 
 (En el navegador no hay notificaciones; esas solo funcionan en el celular.)
 
+## Guardar una copia (respaldo en GitHub)
+
+Cada vez que termines un cambio que te guste, en PowerShell dentro de esta carpeta escribe:
+
+```powershell
+.\guardar "lo que cambiaste"
+```
+
+Por ejemplo: `.\guardar "agregué 5 frases nuevas"`. Eso guarda la copia en tu computadora y la sube a
+https://github.com/luissoto19-ui/vidaquest (privado). Si algo se rompe, siempre podemos regresar a una copia anterior.
+
 ## Dónde cambiar cada cosa
 
 | Quiero cambiar…                     | Archivo                          |
