@@ -53,6 +53,13 @@ npx eas-cli build -p android --profile preview      # APK para instalar en tu ce
 npx eas-cli build -p android --profile production   # AAB para subir a Google Play
 ```
 
+Para iPhone (App Store), con los textos de `tienda/ficha-app-store.md`:
+
+```powershell
+npx eas-cli build -p ios --profile production     # compila para iPhone en la nube (no necesitas Mac)
+npx eas-cli submit -p ios                          # la sube a App Store Connect / TestFlight
+```
+
 Al publicar una versión nueva, la versión interna (`versionCode`) sube sola. Si cambias algo grande,
 también sube `version` en `app.json` (por ejemplo de 1.0.0 a 1.1.0).
 

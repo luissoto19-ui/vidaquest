@@ -25,6 +25,13 @@
         }
       ]
     ],
+    "ios": {
+      "bundleIdentifier": "com.luissoto19.vidaquest",
+      "supportsTablet": false,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
     "android": {
       "package": "com.luissoto19.vidaquest",
       "versionCode": 1,
